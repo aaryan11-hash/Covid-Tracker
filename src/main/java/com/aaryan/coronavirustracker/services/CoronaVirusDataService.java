@@ -5,6 +5,7 @@ import com.aaryan.coronavirustracker.models.LocationStats;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -19,13 +20,14 @@ import java.util.List;
 
 
 @Service
-
+@Component
 public class CoronaVirusDataService {
 
 
     private static  String VIRUS_DATA_URL="https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv";
 
     private List<LocationStats> allStats=new ArrayList<>();
+
 
     @PostConstruct
     @Scheduled(cron = "* * 1 * * *")
@@ -49,10 +51,16 @@ public class CoronaVirusDataService {
             locationStats.setState(record.get("Province/State"));
             locationStats.setCountry(record.get("Country/Region"));
             locationStats.setLatestTotalCases(Integer.parseInt(record.get(record.size()-1)));
-            System.out.println(locationStats);
+
+            newStats.add(locationStats);
         }
+
+        allStats=newStats;
 
     }
 
 
+    public List<LocationStats> getAllStats() {
+        return allStats;
+    }
 }
