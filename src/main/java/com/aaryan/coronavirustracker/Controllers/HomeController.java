@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -16,7 +17,7 @@ public class HomeController {
     CoronaVirusDataService coronaVirusDataService;
 
     @GetMapping("/")
-    public String home(Model model){
+    public String home(Model model) throws IOException, InterruptedException {
         List<LocationStats> allstats=coronaVirusDataService.getAllStats();
         int sum=allstats.stream().mapToInt(stat->stat.getLatestTotalCases()).sum();
         int totalnewCases=allstats.stream().mapToInt(stat->stat.getDiffFromPreviousDay()).sum();
@@ -25,6 +26,9 @@ public class HomeController {
         model.addAttribute("locationStats",coronaVirusDataService.getAllStats());
         model.addAttribute("sum",sum);
         model.addAttribute("totalnewCases",totalnewCases);
+
+        //coronaVirusDataService.weatherStatusCall();
+        coronaVirusDataService.weatherRestTemplateCall();
         return "home";
     }
 

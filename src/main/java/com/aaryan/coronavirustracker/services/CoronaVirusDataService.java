@@ -2,11 +2,15 @@ package com.aaryan.coronavirustracker.services;
 
 
 import com.aaryan.coronavirustracker.models.LocationStats;
+import com.aaryan.coronavirustracker.models.weatherApiModel.ZIP;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -28,9 +32,15 @@ public class CoronaVirusDataService {
 
     private List<LocationStats> allStats=new ArrayList<>();
 
+    private RestTemplate restTemplate;
+
+    public CoronaVirusDataService(RestTemplateBuilder restTemplateBuilder){
+        this.restTemplate=restTemplateBuilder.build();
+    }
+
 
     @PostConstruct
-    @Scheduled(cron = "* * 1 * * *")
+    @Scheduled(cron = "* * * 1 * *")
     public void fetchVirusData() throws IOException, InterruptedException {
         List<LocationStats> newStats=new ArrayList<>();
 
@@ -41,7 +51,6 @@ public class CoronaVirusDataService {
 
         HttpResponse<String> httpResponse=client.send(request, HttpResponse.BodyHandlers.ofString());
         StringReader csvBodyReader=new StringReader(httpResponse.body());
-
         Iterable<CSVRecord> records= CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(csvBodyReader);
 
 
@@ -59,11 +68,51 @@ public class CoronaVirusDataService {
         }
 
         allStats=newStats;
-
+        System.out.println(newStats);
     }
 
 
     public List<LocationStats> getAllStats() {
         return allStats;
     }
+
+    public void weatherStatusCall() throws IOException, InterruptedException {
+        String OPEN_WEATHER_API="https://api.openweathermap.org/data/2.5/weather?q=Pune&appid=2f9b645d1073cba70dcdc5be0644d341";
+        String Open_api="https://api.openweathermap.org/data/2.5/weather?zip=411060,IN&appid=2f9b645d1073cba70dcdc5be0644d341";
+        HttpClient httpClient=HttpClient.newHttpClient();
+        HttpRequest request=HttpRequest.newBuilder()
+                .uri(URI.create(Open_api))
+                .build();
+
+        HttpResponse<String> httpResponse=httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+        System.out.println(httpResponse.body());
+    }
+
+
+    public void weatherRestTemplateCall(){
+        String Open_api="https://api.openweathermap.org/data/2.5/weather?zip=411060,IN&appid=2f9b645d1073cba70dcdc5be0644d341";
+
+        ResponseEntity<ZIP> responseEntity=restTemplate.getForEntity(Open_api,ZIP.class);
+
+        System.out.println(responseEntity.getBody());
+
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
