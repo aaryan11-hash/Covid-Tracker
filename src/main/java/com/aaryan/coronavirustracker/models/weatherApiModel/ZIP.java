@@ -21,7 +21,7 @@ public class ZIP {
    @JsonProperty("main")
     private main main;
 
-   @JsonProperty("timwzone")
+   @JsonProperty("timezone")
    private Double timezone;
 
    @JsonProperty("id")

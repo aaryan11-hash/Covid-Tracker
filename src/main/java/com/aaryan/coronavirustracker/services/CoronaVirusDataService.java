@@ -2,6 +2,7 @@ package com.aaryan.coronavirustracker.services;
 
 
 import com.aaryan.coronavirustracker.models.LocationStats;
+import com.aaryan.coronavirustracker.models.weatherApiModel.Weather;
 import com.aaryan.coronavirustracker.models.weatherApiModel.ZIP;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
@@ -15,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.StringReader;
+import java.math.BigInteger;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -30,7 +32,11 @@ public class CoronaVirusDataService {
 
     private static  String VIRUS_DATA_URL="https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv";
 
+    public static final String WEATHER_API_KEY="2f9b645d1073cba70dcdc5be0644d341";
+
     private List<LocationStats> allStats=new ArrayList<>();
+
+    private ZIP cityCondition=ZIP.builder().build();
 
     private RestTemplate restTemplate;
 
@@ -68,7 +74,7 @@ public class CoronaVirusDataService {
         }
 
         allStats=newStats;
-        System.out.println(newStats);
+        //System.out.println(newStats);
     }
 
 
@@ -85,17 +91,19 @@ public class CoronaVirusDataService {
                 .build();
 
         HttpResponse<String> httpResponse=httpClient.send(request,HttpResponse.BodyHandlers.ofString());
-        System.out.println(httpResponse.body());
+        //System.out.println(httpResponse.body());
     }
 
 
-    public void weatherRestTemplateCall(){
-        String Open_api="https://api.openweathermap.org/data/2.5/weather?zip=411060,IN&appid=2f9b645d1073cba70dcdc5be0644d341";
+    public ZIP weatherRestTemplateCall(int zipcode){
+        String Open_api="https://api.openweathermap.org/data/2.5/weather?zip="+zipcode+",IN&appid="+WEATHER_API_KEY;
 
         ResponseEntity<ZIP> responseEntity=restTemplate.getForEntity(Open_api,ZIP.class);
 
-        System.out.println(responseEntity.getBody());
+        this.cityCondition=responseEntity.getBody();
 
+        //System.out.println(this.cityCondition);
+        return responseEntity.getBody();
     }
 }
 

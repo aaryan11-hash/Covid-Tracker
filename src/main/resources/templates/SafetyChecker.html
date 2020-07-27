@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Safety Checker</title>
+    <style>
+        .error{
+            color: red;
+        }
+
+    </style>
+</head>
+<body>
+
+Please register for our services!!
+<br>
+<hr>
+<hr>
+<form action="#" th:action="@{/postProcessing}" th:object="${userObject}" method="get">
+
+     Enter firstname<input type="text" th:field="*{firstName}" th:errorclass="error" />
+    <p th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" class="error">Input cannot be Blank</p>
+    <br><br>
+    Enter Lastname<input type="text" th:field="*{lastName}" th:errorclass="error">
+    <p th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" class="error">Input cannot be Blank</p>
+    <br><br>
+    Enter Email<input type="text" th:field="*{email}" th:errorclass="error">
+    <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error">Please Enter Only Gmail id</p>
+    <br><br>
+    Enter PhoneNumber<input type="text" th:field="*{phoneNumber}" th:errorclass="error">
+    <p th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}" class="error">Indian phone numbers are exactly 10 numbers in length</p>
+    <br><br>
+    Enter your PinCode<input type="text" th:field="*{pincode}" th:errorclass="error">
+    <p th:if="${#fields.hasErrors('pincode')}" th:errors="*{pincode}" class="error">Pincode for indian territories are designated with exactly 6 characters</p>
+    <br><br>
+    <input type="submit" value="register">
+
+
+</form>
+
+</body>
+</html>
