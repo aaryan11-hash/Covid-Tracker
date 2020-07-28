@@ -8,5 +8,15 @@
 
 <h1 th:text="${ZIP.getName()}">the zip is</h1>
 
+<form action="/mailAuthentication" method="get">
+    enter the token sent to you.
+    <br><br>
+    <input type="text" name="token">
+    <input type="submit" value="submit">
+</form>
+
+
+
+
 </body>
 </html>

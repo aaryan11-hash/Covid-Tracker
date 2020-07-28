@@ -2,10 +2,8 @@ package com.aaryan.coronavirustracker.models;
 
 import lombok.*;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @AllArgsConstructor
@@ -22,7 +20,7 @@ public class UserModel {
     private String lastName;
 
     @NotBlank
-    @Pattern(regexp = "^[a-zA-Z0-9]{5,40}@gmail.com",message = "please make sure that you are entering only gmail and valid credentials")
+    @Pattern(regexp = "^[a-zA-Z0-9]{5,40}@(gmail|yahoo|hotmail|outlook).com$",message = "please make sure that you are entering only gmail and valid credentials")
     private String email;
 
     @Pattern(regexp = "^[0-9]{10}",message ="phone number cannot contain characters!!")
@@ -30,6 +28,11 @@ public class UserModel {
 
     @Pattern(regexp = "^[0-9]{6}",message = "pincodes are built of exactly 6 characters")
     private String pincode;
+
+    private String uuidIndentifier;
+
+    private String notificationFrequency;
+
 
 
 }
