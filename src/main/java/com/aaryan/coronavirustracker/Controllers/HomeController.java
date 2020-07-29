@@ -17,6 +17,8 @@ import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Controller
 public class HomeController {
@@ -68,6 +70,7 @@ public class HomeController {
     public String processResult(@Valid @ModelAttribute("userObject") UserModel userModel, Errors result, Model model){
 
         if(result.hasErrors())
+
             return "SafetyChecker";
 
         else{
@@ -76,10 +79,18 @@ public class HomeController {
 
             model.addAttribute("ZIP",zip);
             System.out.println("user email"+this.userModel.getEmail());
-           mailingService.sendMail2(this.userModel.getEmail());
+
+
+
+
+            this.authToken=mailingService.sendMail(this.userModel.getEmail());
+
+
+
 
 
             return "Result";
+
         }
 
     }
@@ -87,9 +98,11 @@ public class HomeController {
     @GetMapping("/mailAuthentication")
     public String mailConfirmationChecker(@RequestParam("token") String token,Model model){
 
-        if(token.contentEquals(this.authToken))
-            return "home";
+        if(token.contentEquals(this.authToken)) {
 
+
+            return "redirect:/";
+        }
         else
             return "Result";
 

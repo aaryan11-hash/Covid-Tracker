@@ -9,34 +9,91 @@
         }
 
     </style>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
 </head>
 <body>
 
-Please register for our services!!
-<br>
-<hr>
-<hr>
+<div style="background-color:cornflowerblue;height: 2cm;text-align: center;">
+    <div style="padding:.5cm;">
+<ul class="nav">
+    <li class="nav-item" >
+        <a class="nav-link" href="#" style="color: aliceblue">Active</a>
+      </li>
+    <li class="nav-item" >
+      <a class="nav-link" href="#" style="color: aliceblue">Link</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#" style="color: aliceblue">Link</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true" style="color: aliceblue">Disabled</a>
+    </li>
+    <br>
+    
+  </ul>
+</div>
+</div>
+
+<div style="background-color:lavender; height: 40cm;">
+  <p>Please Register for our services!</p>
+
+<br><br><br><br><br><br><br>
+<div class="container" style="max-width: 18cm;background-color:cornflowerblue;max-height: 20cm;border-radius: 25px;">
+<div class="container" style="max-width: 15cm; padding-right: 1cm;padding-top: 1.5cm;">
 <form action="#" th:action="@{/postProcessing}" th:object="${userObject}" method="get">
 
-     Enter firstname<input type="text" th:field="*{firstName}" th:errorclass="error" />
+    <div class="form-group">
+    <label for="firstname">Firstname</label>
+    <input type="text" th:field="*{firstName}" th:errorclass="error" id="firstname" class="form-control"  aria-describedby="emailHelp"/>
     <p th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" class="error">Input cannot be Blank</p>
-    <br><br>
-    Enter Lastname<input type="text" th:field="*{lastName}" th:errorclass="error">
+
+    </div>
+
+    <div class="form-group">
+        <label for="lastname">Lastname</label>
+    Enter Lastname<input type="text" th:field="*{lastName}" th:errorclass="error" id="lastname" aria-describedby="emailHelp" class="form-control">
     <p th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" class="error">Input cannot be Blank</p>
-    <br><br>
-    Enter Email<input type="text" th:field="*{email}" th:errorclass="error">
+
+    </div>
+
+    <div class="form-group">
+        <label for="email">E-mail</label>
+    Enter Email<input type="email" th:field="*{email}" th:errorclass="error" aria-describedby="emailHelp" class="form-control" id="email">
     <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error">Please Enter Only Gmail id</p>
-    <br><br>
-    Enter PhoneNumber<input type="text" th:field="*{phoneNumber}" th:errorclass="error">
+        <small class="form-text text-muted">We'll never share your email with anyone else.</small>
+
+    </div>
+
+    <div class="form-group">
+        <label for="phonenumber">Phone-Number</label>
+    Enter PhoneNumber<input type="text" th:field="*{phoneNumber}" th:errorclass="error" aria-describedby="emailHelp" class="form-control" id="phonenumber">
     <p th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}" class="error">Indian phone numbers are exactly 10 numbers in length</p>
-    <br><br>
-    Enter your PinCode<input type="text" th:field="*{pincode}" th:errorclass="error">
+        <small class="form-text text-muted">We'll never share your email with anyone else.</small>
+
+    </div>
+
+    <div class="form-group">
+        <label for="pincode">PinCode</label>
+    Enter your PinCode<input type="text" th:field="*{pincode}" th:errorclass="error" aria-describedby="emailHelp" class="form-control" id="pincode">
     <p th:if="${#fields.hasErrors('pincode')}" th:errors="*{pincode}" class="error">Pincode for indian territories are designated with exactly 6 characters</p>
-    <br><br>
-    <input type="submit" value="register">
+
+    </div>
+
+    <input type="submit"  value="register" class="btn btn-dark" style="margin-left: 5.5cm;width: 3cm;">
+
+
+
 
 
 </form>
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+</div>
+</div>
+
+</div>
 
 </body>
 </html>

@@ -20,7 +20,7 @@ public class UserModel {
     private String lastName;
 
     @NotBlank
-    @Pattern(regexp = "^[a-zA-Z0-9]{5,40}@(gmail|yahoo|hotmail|outlook).com$",message = "please make sure that you are entering only gmail and valid credentials")
+    @Pattern(regexp = "^[a-zA-Z0-9.]{5,40}@(gmail.com|yahoo.com|hotmail.com|outlook.com|sitpune.edu.in)$",message = "please make sure that you are entering only gmail and valid credentials")
     private String email;
 
     @Pattern(regexp = "^[0-9]{10}",message ="phone number cannot contain characters!!")
