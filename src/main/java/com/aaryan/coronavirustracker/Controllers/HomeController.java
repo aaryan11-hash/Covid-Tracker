@@ -3,6 +3,7 @@ package com.aaryan.coronavirustracker.Controllers;
 import com.aaryan.coronavirustracker.models.LocationStats;
 import com.aaryan.coronavirustracker.models.UserModel;
 import com.aaryan.coronavirustracker.models.weatherApiModel.ZIP;
+import com.aaryan.coronavirustracker.services.CoronaVirusApiCall;
 import com.aaryan.coronavirustracker.services.CoronaVirusDataService;
 import com.aaryan.coronavirustracker.services.MailingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +24,17 @@ import java.util.concurrent.Executors;
 @Controller
 public class HomeController {
 
-  @Autowired
-  private CoronaVirusDataService coronaVirusDataService;
 
-  @Autowired
-  private MailingService mailingService;
+    @Autowired
+    private CoronaVirusApiCall coronaVirusApiCall;
 
-  private UserModel userModel;
+    @Autowired
+    private CoronaVirusDataService coronaVirusDataService;
+
+    @Autowired
+    private MailingService mailingService;
+
+     private UserModel userModel;
 
     private String authToken;
 
@@ -44,12 +49,12 @@ public class HomeController {
 
     @GetMapping("/")
     public String home(Model model) throws IOException, InterruptedException {
-        List<LocationStats> allstats=coronaVirusDataService.getAllStats();
+        List<LocationStats> allstats=coronaVirusApiCall.getCovidCases();
         int sum=allstats.stream().mapToInt(stat->stat.getLatestTotalCases()).sum();
         int totalnewCases=allstats.stream().mapToInt(stat->stat.getDiffFromPreviousDay()).sum();
 
         model.addAttribute("test","test");
-        model.addAttribute("locationStats",coronaVirusDataService.getAllStats());
+        model.addAttribute("locationStats",allstats);
         model.addAttribute("sum",sum);
         model.addAttribute("totalnewCases",totalnewCases);
 

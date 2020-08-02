@@ -30,59 +30,93 @@
     <li class="nav-item">
       <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true" style="color: aliceblue">Disabled</a>
     </li>
+    <li>
+        <p style="padding-left: 20cm;padding-top: .19cm;">Covid Tracker Notification Services Sign-up</p>
+    </li>
     <br>
     
   </ul>
 </div>
 </div>
 
-<div style="background-color:lavender; height: 40cm;">
-  <p>Please Register for our services!</p>
+<div style="background-color:white; height: 40cm;">
+  
+  
+    <p style="font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;padding-left: 40%;padding-top: 3.5cm; font-size: larger;">Please Register for our services!</p>
+    
+<br><br><br>
 
-<br><br><br><br><br><br><br>
-<div class="container" style="max-width: 18cm;background-color:cornflowerblue;max-height: 20cm;border-radius: 25px;">
-<div class="container" style="max-width: 15cm; padding-right: 1cm;padding-top: 1.5cm;">
-<form action="#" th:action="@{/postProcessing}" th:object="${userObject}" method="get">
 
-    <div class="form-group">
-    <label for="firstname">Firstname</label>
-    <input type="text" th:field="*{firstName}" th:errorclass="error" id="firstname" class="form-control"  aria-describedby="emailHelp"/>
-    <p th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" class="error">Input cannot be Blank</p>
+<div class="container" style="max-width: 18cm;background-color:cornflowerblue;max-height: 20cm;border-radius: 25px;box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.22);
+-moz-box-shadow: 0px 0px 15px rgba(15, 3, 3, 0.22);
+-webkit-box-shadow:  0px 0px 15px rgba(17, 7, 7, 0.22);">
+
+    <div class="container" style="max-width: 15cm; padding-right: 1cm;padding-top: 1.5cm;">
+
+        <form action="#" th:action="@{/postProcessing}" th:object="${userObject}" method="get">
+
+   
+            <div class="form-group">
+    
+                <label for="firstname">Firstname</label>
+    
+                <input type="text" th:field="*{firstName}" th:errorclass="error" id="firstname" class="form-control"  aria-describedby="emailHelp"/>
+    
+                <p th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" class="error">Input cannot be Blank</p>
+
 
     </div>
 
+    
     <div class="form-group">
+    
         <label for="lastname">Lastname</label>
-    Enter Lastname<input type="text" th:field="*{lastName}" th:errorclass="error" id="lastname" aria-describedby="emailHelp" class="form-control">
-    <p th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" class="error">Input cannot be Blank</p>
+    
+       <input type="text" th:field="*{lastName}" th:errorclass="error" id="lastname" aria-describedby="emailHelp" class="form-control">
+    
+        <p th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" class="error">Input cannot be Blank</p>
 
+    
     </div>
 
+    
     <div class="form-group">
+    
         <label for="email">E-mail</label>
-    Enter Email<input type="email" th:field="*{email}" th:errorclass="error" aria-describedby="emailHelp" class="form-control" id="email">
-    <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error">Please Enter Only Gmail id</p>
+    
+       <input type="email" th:field="*{email}" th:errorclass="error" aria-describedby="emailHelp" class="form-control" id="email">
+    
+        <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error">Please Enter Only Gmail id</p>
+    
         <small class="form-text text-muted">We'll never share your email with anyone else.</small>
 
     </div>
 
     <div class="form-group">
+    
         <label for="phonenumber">Phone-Number</label>
-    Enter PhoneNumber<input type="text" th:field="*{phoneNumber}" th:errorclass="error" aria-describedby="emailHelp" class="form-control" id="phonenumber">
-    <p th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}" class="error">Indian phone numbers are exactly 10 numbers in length</p>
+    
+       <input type="text" th:field="*{phoneNumber}" th:errorclass="error" aria-describedby="emailHelp" class="form-control" id="phonenumber">
+    
+        <p th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}" class="error">Indian phone numbers are exactly 10 numbers in length</p>
+    
         <small class="form-text text-muted">We'll never share your email with anyone else.</small>
 
     </div>
 
+    
     <div class="form-group">
+    
         <label for="pincode">PinCode</label>
-    Enter your PinCode<input type="text" th:field="*{pincode}" th:errorclass="error" aria-describedby="emailHelp" class="form-control" id="pincode">
-    <p th:if="${#fields.hasErrors('pincode')}" th:errors="*{pincode}" class="error">Pincode for indian territories are designated with exactly 6 characters</p>
+    
+       <input type="text" th:field="*{pincode}" th:errorclass="error" aria-describedby="emailHelp" class="form-control" id="pincode">
+    
+        <p th:if="${#fields.hasErrors('pincode')}" th:errors="*{pincode}" class="error">Pincode for indian territories are designated with exactly 6 characters</p>
 
     </div>
 
+    
     <input type="submit"  value="register" class="btn btn-dark" style="margin-left: 5.5cm;width: 3cm;">
-
 
 
 
@@ -90,7 +124,9 @@
 </form>
 
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
 </div>
+
 </div>
 
 </div>

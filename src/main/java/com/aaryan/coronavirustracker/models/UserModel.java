@@ -29,9 +29,7 @@ public class UserModel {
     @Pattern(regexp = "^[0-9]{6}",message = "pincodes are built of exactly 6 characters")
     private String pincode;
 
-    private String uuidIndentifier;
 
-    private String notificationFrequency;
 
 
 
