@@ -2,6 +2,7 @@ package com.aaryan.coronavirustracker.configcc;
 
 
 import com.aaryan.coronavirustracker.configcc.ConfigerrorHandlers.QueueHandler;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -9,17 +10,21 @@ import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.config.JmsListenerContainerFactory;
 import org.springframework.jms.config.SimpleJmsListenerContainerFactory;
+import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.jms.core.JmsTemplate;
 
 import javax.jms.ConnectionFactory;
 
 @Configuration
+@EnableJms
 public class JmsConfig {
 
     @Autowired
     private Environment environment;
+
 
 
     public static final String CORONA_MAIL_MSG="mail-send-stimulus";
@@ -48,4 +53,11 @@ public class JmsConfig {
 
         return new JmsTemplate(connectionFactory());
     }
+
+    @Bean
+    public ObjectMapper objectMapper(){
+
+        return new ObjectMapper();
+    }
+
 }
