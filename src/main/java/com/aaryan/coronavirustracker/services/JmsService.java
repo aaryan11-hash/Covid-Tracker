@@ -22,26 +22,13 @@ public class JmsService {
         userModelDto.setUuid(authToken);
 
         try {
+
             jmsTemplate.convertAndSend(JmsConfig.CORONA_MAIL_MSG,objectMapper.writeValueAsString(userModelDto));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
 
-        System.out.println("sending message");;
-        /*jmsTemplate.send(JmsConfig.CORONA_MAIL_MSG, new MessageCreator() {
-            @Override
-            public Message createMessage(Session session) throws JMSException {
-                System.out.println("inside send message block");;
-                Message message= null;
-                message = session.createObjectMessage(userModel);
 
-                return message;
-            }
-        }
-        );*/
-
-
-        System.out.println("message sent!!");;
 
     }
 

@@ -33,7 +33,7 @@ public class CoronaVirusApiCall {
         this.restTemplate=builder.build();
     }
 
-    @Scheduled(cron = "* * 1 * * *")
+    @Scheduled(cron = "* * * 1 * *")
     public List<LocationStats> getCovidCases(){
 
         ResponseEntity<List<LocationStats>> caseList=restTemplate

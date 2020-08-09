@@ -42,6 +42,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String home(Model model) throws IOException, InterruptedException {
+
         List<LocationStats> allstats=coronaVirusApiCall.getCovidCases();
         int sum=allstats.stream().mapToInt(stat->stat.getLatestTotalCases()).sum();
         int totalnewCases=allstats.stream().mapToInt(stat->stat.getDiffFromPreviousDay()).sum();
@@ -75,13 +76,13 @@ public class HomeController {
             this.userModelDto = userModelDto;
             //ZIP zip=this.coronaVirusDataService.weatherRestTemplateCall(Integer.parseInt(userModel.getPincode()));
 
-            //model.addAttribute("ZIP",zip);
+
             this.authToken=UUID.randomUUID().toString();
 
             System.out.println("auth token is: "+this.authToken);
             jmsService.sendObjectUserSaveCommand(userModelDto,this.authToken);
 
-            //this.authToken=mailingService.sendMail(this.userModel.getEmail());
+
             return "Result";
 
         }
