@@ -82,7 +82,6 @@ public class HomeController {
             System.out.println("auth token is: "+this.authToken);
             jmsService.sendObjectUserSaveCommand(userModelDto,this.authToken);
 
-
             return "Result";
 
         }

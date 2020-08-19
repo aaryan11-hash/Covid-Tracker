@@ -15,6 +15,8 @@ import org.springframework.jms.config.JmsListenerContainerFactory;
 import org.springframework.jms.config.SimpleJmsListenerContainerFactory;
 import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
+import org.springframework.jms.support.converter.MessageType;
 
 import javax.jms.ConnectionFactory;
 
@@ -31,10 +33,13 @@ public class JmsConfig {
 
     @Bean
     public ConnectionFactory connectionFactory(){
+
         ActiveMQConnectionFactory connectionFactory=new ActiveMQConnectionFactory();
         connectionFactory.setBrokerURL(environment.getProperty("activemq.broker-url"));
         connectionFactory.setUserName(environment.getProperty("activemq.username"));
         connectionFactory.setPassword(environment.getProperty("activemq.password"));
+
+
         connectionFactory.setTrustAllPackages(true);
         return connectionFactory;
     }
