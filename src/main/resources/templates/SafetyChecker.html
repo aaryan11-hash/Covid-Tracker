@@ -115,6 +115,24 @@
 
     </div>
 
+            <div class="form-group">
+
+                <label for="State">State</label>
+
+                <input type="text" th:field="*{state}" th:errorclass="error" aria-describedby="emailHelp" class="form-control" id="State">
+
+                <p th:if="${#fields.hasErrors('state')}" th:errors="*{pincode}" class="error">Pincode for indian territories are designated with exactly 6 characters</p>
+
+            </div>
+            <div class="form-group">
+
+                <label for="City">City</label>
+
+                <input type="text" th:field="*{city}" th:errorclass="error" aria-describedby="emailHelp" class="form-control" id="City">
+
+                <p th:if="${#fields.hasErrors('city')}" th:errors="*{pincode}" class="error">Pincode for indian territories are designated with exactly 6 characters</p>
+
+            </div>
     
     <input type="submit"  value="register" class="btn btn-dark" style="margin-left: 5.5cm;width: 3cm;">
 

@@ -11,27 +11,40 @@ import javax.persistence.*;
 @Getter
 @Setter
 @ToString
-@Entity
+
 public class UserModel {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(updatable = true,nullable = false,columnDefinition = "varchar(30)")
+   // @Column(updatable = true,nullable = false,columnDefinition = "varchar(30)")
     private String firstName;
 
-    @Column(updatable = true,nullable = false,columnDefinition = "varchar(30)")
+   // @Column(updatable = true,nullable = false,columnDefinition = "varchar(30)")
     private String lastName;
 
-    @Column(updatable = true,nullable = false,columnDefinition = "varchar(30)")
+    //@Column(updatable = true,nullable = false,columnDefinition = "varchar(30)")
+    private String password;
+
+    //@Column(updatable = true,nullable = false,columnDefinition = "varchar(30)")
     private String email;
 
-    @Column(updatable = true,nullable = false,columnDefinition = "varchar(40)")
+    //@Column(updatable = true,nullable = false,columnDefinition = "varchar(40)")
     private String phoneNumber;
 
-    @Column(updatable = true,nullable = false,columnDefinition = "varchar(30)")
+   // @Column(updatable = true,nullable = false,columnDefinition = "varchar(30)")
     private String pincode;
+
+   // @Column(updatable = true,nullable = false,columnDefinition = "varchar(30)")
+    private String state;
+
+   // @Column(updatable = true,nullable = false,columnDefinition = "varchar(30)")
+    private String city;
+
+
+
+
 
 
 }

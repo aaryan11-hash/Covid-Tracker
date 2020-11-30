@@ -1,5 +1,7 @@
 package com.aaryan.coronavirustracker.services;
 
+import com.aaryan.coronavirustracker.Model.IndiaStateCasesModel.IndianStates;
+import com.aaryan.coronavirustracker.Model.UserProcessModelDto.UserModelStatsDto;
 import com.aaryan.coronavirustracker.models.LocationStats;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -15,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Component
 public class CoronaVirusApiCall {
     
@@ -22,12 +25,10 @@ public class CoronaVirusApiCall {
 
     private List<LocationStats> CasesBufferList=new ArrayList<>();
 
-    public static final String casesApiPath="/covid/data/casesTable";
+    public static final String casesApiPath="/covid/data/";
 
     @Autowired
     private Environment environment;
-
-
 
     public CoronaVirusApiCall(RestTemplateBuilder builder){
         this.restTemplate=builder.build();
@@ -37,12 +38,29 @@ public class CoronaVirusApiCall {
     public List<LocationStats> getCovidCases(){
 
         ResponseEntity<List<LocationStats>> caseList=restTemplate
-                .exchange(environment.getProperty("covid.api.url") + casesApiPath, HttpMethod.GET, null
+                .exchange(environment.getProperty("covid.api.url") + casesApiPath+"casesTable", HttpMethod.GET, null
                         , new ParameterizedTypeReference<List<LocationStats>>() {});
 
         this.CasesBufferList=caseList.getBody();
         return this.CasesBufferList;
     }
+
+    public List<IndianStates> getindianStatesData(){
+
+        ResponseEntity<List<IndianStates>> indianStatesList = restTemplate
+                .exchange(environment.getProperty("covid.api.url") + casesApiPath + "getIndianStateData", HttpMethod.GET, null, new ParameterizedTypeReference<List<IndianStates>>() {});
+        return indianStatesList.getBody();
+    }
+
+    public UserModelStatsDto getLiveuserRequest(String state,String city){
+
+        ResponseEntity<UserModelStatsDto> userModelStatsDtoResponseEntity = restTemplate
+                .exchange(environment.getProperty("covid.api.url")+casesApiPath+"user/{"+state+"}/{"+city+"}",HttpMethod.GET,null,new ParameterizedTypeReference<UserModelStatsDto>(){});
+
+        return userModelStatsDtoResponseEntity.getBody();
+    }
+
+
 
 
     

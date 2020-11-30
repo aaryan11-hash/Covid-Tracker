@@ -1,12 +1,13 @@
-package com.aaryan.coronavirustracker.models;
+package com.aaryan.coronavirustracker.Model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 @AllArgsConstructor
@@ -14,10 +15,9 @@ import java.util.UUID;
 @Setter
 @Data
 @Builder
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserModelDto implements Serializable {
 
-    static final long serialNumber=-1214124L;
+    static final long  serialNumber=-1214124L;
 
     @JsonProperty("firstname")
     @NotBlank
@@ -26,6 +26,10 @@ public class UserModelDto implements Serializable {
     @JsonProperty("lastname")
     @NotBlank
     private String lastName;
+
+    @JsonProperty("password")
+    @NotBlank
+    private String password;
 
     @JsonProperty("email")
     @NotBlank
@@ -44,13 +48,13 @@ public class UserModelDto implements Serializable {
     @Null
     private String uuid;
 
+    @JsonProperty("state")
     @NotNull
     private String state;
 
+    @JsonProperty("city")
     @NotNull
     private String city;
 
-
-    private String token;
 
 }
