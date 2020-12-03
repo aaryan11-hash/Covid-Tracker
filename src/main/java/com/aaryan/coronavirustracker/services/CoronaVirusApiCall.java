@@ -1,5 +1,6 @@
 package com.aaryan.coronavirustracker.services;
 
+import com.aaryan.coronavirustracker.Domain.UserModel;
 import com.aaryan.coronavirustracker.Model.IndiaStateCasesModel.IndianStates;
 import com.aaryan.coronavirustracker.Model.UserProcessModelDto.UserModelStatsDto;
 import com.aaryan.coronavirustracker.models.LocationStats;
@@ -14,6 +15,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,11 +54,11 @@ public class CoronaVirusApiCall {
         return indianStatesList.getBody();
     }
 
-    public UserModelStatsDto getLiveuserRequest(String state,String city){
+    public UserModelStatsDto getLiveuserRequest(UserModel userModel){
 
         ResponseEntity<UserModelStatsDto> userModelStatsDtoResponseEntity = restTemplate
-                .exchange(environment.getProperty("covid.api.url")+casesApiPath+"user/{"+state+"}/{"+city+"}",HttpMethod.GET,null,new ParameterizedTypeReference<UserModelStatsDto>(){});
-
+                .exchange(environment.getProperty("covid.api.url")+casesApiPath+"user/"+userModel.getState()+"/"+userModel.getCity(),HttpMethod.GET,null,new ParameterizedTypeReference<UserModelStatsDto>(){});
+        //UserModelStatsDto userModelStatsDtoResponseEntity1 =restTemplate.getForObject(URI.create(environment.getProperty("covid.api.url")+casesApiPath+"user/{"+userModel.getState()+"}/{"+userModel.getCity()+"}"),UserModelStatsDto.class);
         return userModelStatsDtoResponseEntity.getBody();
     }
 

@@ -1,5 +1,6 @@
 package com.aaryan.coronavirustracker.Domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,7 +12,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @ToString
-
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserModel {
 
 //    @Id
@@ -35,6 +36,7 @@ public class UserModel {
 
    // @Column(updatable = true,nullable = false,columnDefinition = "varchar(30)")
     private String pincode;
+
 
    // @Column(updatable = true,nullable = false,columnDefinition = "varchar(30)")
     private String state;

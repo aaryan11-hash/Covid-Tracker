@@ -27,6 +27,9 @@ public class UserModelDto implements Serializable {
     @NotBlank
     private String lastName;
 
+    @Pattern(regexp = "[a-zA-Z0-9]{8,20}",message = "caanot be null")
+    private String password;
+
     @JsonProperty("email")
     @NotBlank
     @Pattern(regexp = "^[a-zA-Z0-9.]{5,40}@(gmail.com|yahoo.com|hotmail.com|outlook.com|sitpune.edu.in)$",message = "please make sure that you are entering only gmail and valid credentials")
@@ -41,7 +44,6 @@ public class UserModelDto implements Serializable {
     private String pincode;
 
     @JsonProperty("uuid")
-    @Null
     private String uuid;
 
     @NotNull

@@ -1,10 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Login Succcess</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 </head>
 <body>
 
+<div style="background-color:cornflowerblue;height: 2cm;text-align: center;">
+    <div style="padding:.5cm;">
+        <ul class="nav">
+
+            <li class="nav-item">
+                <a class="nav-link" href="/" tabindex="-1" aria-disabled="true" style="color: aliceblue">Back to Home Page</a>
+            </li>
+            <li>
+                <p style="padding-left: 25cm;padding-top: .19cm;">Covid Tracker Notification Services Sign-up</p>
+            </li>
+            <br>
+
+        </ul>
+    </div>
+</div>
+
+
+
+
+<table class="table">
+    <tr>
+        <th>State</th>
+        <th>City or District</th>
+        <th>State Confirmed Cases</th>
+        <th>State Active Cases</th>
+        <th>State Total Recovered Cases</th>
+        <th>State Death Cases</th>
+        <th>District Confirmed Cases</th>
+        <th>Previous Day's Case Count</th>
+    </tr>
+    <tr>
+        <th th:text="${data.state}"></th>
+        <th th:text="${data.city}"></th>
+        <th th:text="${data.getStateConfirmedCases()}"></th>
+        <th th:text="${data.getStateActiveCases()}"></th>
+        <th th:text="${data.getStateRecoveredCases()}"></th>
+        <th th:text="${data.getStateDeathCases()}"></th>
+        <th th:text="${data.getDistrictConfirmedCases()}"></th>
+        <th th:text="${data.getTodaysCaseCount()}"></th>
+    </tr>
+
+</table>
 </body>
 </html>

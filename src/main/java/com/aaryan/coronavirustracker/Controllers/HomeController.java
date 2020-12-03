@@ -3,6 +3,7 @@ package com.aaryan.coronavirustracker.Controllers;
 import com.aaryan.coronavirustracker.Domain.Token;
 import com.aaryan.coronavirustracker.Domain.UserModel;
 import com.aaryan.coronavirustracker.Model.LoginUser;
+import com.aaryan.coronavirustracker.Model.UserProcessModelDto.UserModelStatsDto;
 import com.aaryan.coronavirustracker.Repository.TokenRepository;
 import com.aaryan.coronavirustracker.models.LocationStats;
 import com.aaryan.coronavirustracker.models.UserModelDto;
@@ -28,6 +29,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Controller
 public class HomeController {
@@ -83,25 +86,37 @@ public class HomeController {
     }
 
     //todo this part will invoke a mail service as well that will notify the user that has provided details
-    //todo it will send details of the weather in xyz pincode region where the user lives
+
     @GetMapping("/postProcessing")
     public String processResult(@Valid @ModelAttribute("userObject") UserModelDto userModelDto, Errors result, Model model) {
 
-        if (result.hasErrors()) {
+        int ThreadCount = Runtime.getRuntime().availableProcessors();
+        ExecutorService service = Executors.newFixedThreadPool(ThreadCount);
+
+    if (result.hasErrors()) {
 
             return "SafetyChecker";
         } else {
+            RestTemplate restTemplate =this.restTemplate;
             System.out.println("inside ");
             this.userModelDto = userModelDto;
             //ZIP zip=this.coronaVirusDataService.weatherRestTemplateCall(Integer.parseInt(userModel.getPincode()));
 
-
-            this.authToken = UUID.randomUUID().toString();
+            System.out.println(userModelDto);
+            userModelDto.setToken(UUID.randomUUID().toString());
+            this.authToken = userModelDto.getToken();
 
             System.out.println("auth token is: " + this.authToken);
             //jmsService.sendObjectUserSaveCommand(userModelDto,this.authToken);
-            userModelDto.setToken(this.authToken);
-            this.restTemplate.postForObject(String.valueOf(URI.create("http://localhost:8081/covid/data/postUser")), userModelDto, userModelDto.getClass());
+
+        service.execute(new Thread(){
+
+          @Override
+          public void run(){
+              restTemplate.postForObject(String.valueOf(URI.create("http://localhost:8081/covid/data/postUser")), userModelDto, userModelDto.getClass());
+
+          }
+        });
 
 
             return "Result";
@@ -133,7 +148,7 @@ public class HomeController {
     }
 
     @GetMapping("/loginCheck")
-    public String LoginCheck(@Valid @ModelAttribute LoginUser loginUser, BindingResult result) {
+    public String LoginCheck(@Valid @ModelAttribute LoginUser loginUser, BindingResult result,Model model) {
         if (result.hasErrors())
             return "Login";
 
@@ -144,14 +159,22 @@ public class HomeController {
             });
 
             for (UserModel userModel : verification.getBody()) {
-                if (loginUser.getFirstname().contentEquals(userModel.getFirstName()) && loginUser.getPassword().contentEquals(userModel.getPassword()));
-                        return "successlogin";
+                if (loginUser.getFirstname().contentEquals(userModel.getFirstName()) && loginUser.getPassword().contentEquals(userModel.getPassword())) {
+                    UserModelStatsDto temp = this.coronaVirusApiCall.getLiveuserRequest(userModel);
+                    model.addAttribute("data", temp);
+                    return "successlogin";
+                }
             }
 
             return "Login";
         }
 
 
+    }
+
+    @GetMapping("/APISource")
+    public String getApiSourcePage(){
+        return "APIs";
     }
 
 }

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>API Version Source</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+
+</head>
+<div class="container">
+<h1>API Versioning and Source Call Documentation for HTTP Client Transactions</h1><br><br><br>
+
+This document explains the source code and versioning of the covid tracker application.The data that is provided by this application is the output of preprocessed raw json data that is ordered,structured and reorganised for consumption by any indivisual,xyz corporation for personal use.The data obtained from 3rd party NGOs that make this project possible are completely open source in nature and no copyright infringement will be inflicted by the owner of the data or by thr owner of this application.<br><br><br>
+
+API Source Code Sample<br><br><br>
+    <div class="container">
+<h3>1.)	Get Cases for countries across the globe</h3><br><br>
+    <div class = "container">
+       	<div style="color: blue">http://C0V1DTracker/covid/data/API/Source/casesTable</div><br>
+        <div class="container">
+        i.	This link provides the JSON data for  the cases of all the countries that are registered in the UN(United nations) and are providing constant cases data to the UNSC.<br>
+        ii.	This Link provided Data for the indivisual countries for a total of 5 days considered from the present day.<br>
+        iii.	The JSON Object for the API call is represented by the given object class :<br>
+          1.	<div style="color: green">[WORLDCases : {<br>
+                state : String,<br>
+                country : String,<br>
+                day1 : Integer,<br>
+                day2 : Integer,<br>
+                day3 : Integer,<br>
+                day4 : Integer,<br>
+                day5 : Integer<br>
+            }];</div><br>
+iv.	The following API call will generate the desired List expected by the user :<br>
+<div style="color: red">[<br>
+{<br>
+"state": "",<br>
+"country": "Afghanistan",<br>
+"day1": 46215,<br>
+"day2": 45966,<br>
+"day3": 45839,<br>
+"day4": 45716,<br>
+"day5": 45490<br>
+},<br>
+{<br>
+"state": "",<br>
+"country": "Albania",<br>
+"day1": 37625,<br>
+"day2": 36790,<br>
+"day3": 36245,<br>
+"day4": 35600,<br>
+"day5": 34944 }<br>
+    ];<br></div>
+        </div>
+    </div>
+        <h3>2.)	Get Cases for the Indian States</h3><br><br>
+        <div class = "container">
+            <div style="color: blue">http://C0V1DTracker/covid /data/getIndianStateData</div><br>
+        <div class = "container">
+i.	This link provides the JSON data for  the cases of all the states that are registered in the State Indian Constituency  and are providing constant cases data to the Indian Govt.<br>
+ii.	This Link provided Data for the indivisual States of the country and provides data of total active,confirmed,recovered,deaths and an array of data on the districts of that state which include district confirmed,recovered and death cases<br>
+iii.	The JSON Object for the API call is represented by the given object class :<br>
+1.	<div style="color: green">[IndianStates : {<br>
+id : String,<br>
+state : String,<br>
+active : Integer,<br>
+confirmed : Integer,<br>
+deaths : Integer,<br>
+districtdata : [DistrictData : {<br>
+id : String<br>
+name : String,<br>
+confirmed : Integer,<br>
+recovered : Integer,<br>
+deaths : Integer<br>
+}]<br>
+            }];</div><br>
+iv.	The following API call will generate the desired List expected by the user :<br>
+            <div style="color: red">[<br>
+{<br>
+"id": "IN-MH",<br>
+"state": "Maharashtra",<br>
+"active": 91623,<br>
+"confirmed": 1823896,<br>
+"recovered": 1685122,<br>
+"deaths": 47151,<br>
+"districtData": [<br>
+{<br>
+"id": "Pune",<br>
+"name": "Pune",<br>
+"confirmed": 353087,<br>
+"recovered": null,<br>
+"deaths": null<br>
+},<br>
+{<br>
+"id": "Mumbai",<br>
+"name": "Mumbai",<br>
+"confirmed": 283467,<br>
+"recovered": null,<br>
+"deaths": null<br>
+}]<br>
+}];<br>
+            </div> </div></div>
+       	<h3> 3.) Get Cases for Specific District of any Indian State</h3><br><br>
+        <div class = "container">
+            	<div style="color: blue">http://C0V1DTracker/covid /data/user/{state}/{city}</div><br>
+            <div class = "container">
+i.	This link provides the JSON data for  the cases for any district that is registered in the State Indian Constituency  and are providing constant cases data to the Indian Govt.<br>
+ii.	This Link Provides Data for the specified District of the country.<br>
+iii.	The JSON Object for the API call is represented by the given object class :<br>
+1.	<div style="color: green">UserModelStatsDto : {<br>
+city : String,<br>
+state : String,<br>
+stateConfirmedCases : Integer,<br>
+stateActiveCases : Integer,<br>
+stateRecoveredCases : Integer,<br>
+stateDeathCases : Integer,<br>
+districtConfirmedCases : Integer,<br>
+todaysCaseCount : Integer<br>
+                };</div><br>
+iv.	The following API call will generate the desired List expected by the user :<br>
+(http://C0V1DTracker/covid/data/user/Maharashtra/pune)<br>
+<br>
+                <div style="color: red">{<br>
+"city": "PUNE",<br>
+"state": "MAHARASHTRA",<br>
+"stateConfirmedCases": 1823896,<br>
+"stateActiveCases": 91623,<br>
+"stateRecoveredCases": 1685122,<br>
+"stateDeathCases": 47151,<br>
+"districtConfirmedCases": 353087,<br>
+"todaysCaseCount": 4<br>
+}<br>
+            </div></div>
+</div>
+</div>
+</div>
+
+
+
+
+<body>
+
+</body>
+</html>
