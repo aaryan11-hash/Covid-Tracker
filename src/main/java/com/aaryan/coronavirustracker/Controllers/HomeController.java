@@ -1,17 +1,19 @@
 package com.aaryan.coronavirustracker.Controllers;
 
-import com.aaryan.coronavirustracker.Domain.Token;
-import com.aaryan.coronavirustracker.Domain.UserModel;
 import com.aaryan.coronavirustracker.Model.LoginUser;
+import com.aaryan.coronavirustracker.Model.TempUserInfo;
 import com.aaryan.coronavirustracker.Model.UserProcessModelDto.UserModelStatsDto;
-import com.aaryan.coronavirustracker.Repository.TokenRepository;
 import com.aaryan.coronavirustracker.models.LocationStats;
 import com.aaryan.coronavirustracker.models.UserModelDto;
+import com.aaryan.coronavirustracker.models.UserSessionStore;
 import com.aaryan.coronavirustracker.services.CoronaVirusApiCall;
-import com.aaryan.coronavirustracker.services.JmsService;
+import com.aaryan.coronavirustracker.services.UserServiceBuffer;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -24,25 +26,29 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
+import javax.sound.midi.Soundbank;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Controller
+@Slf4j
 public class HomeController {
-
-    @Autowired
-    private JmsService jmsService;
 
     @Autowired
     private CoronaVirusApiCall coronaVirusApiCall;
 
     @Autowired
-    private TokenRepository tokenRepository;
+    private UserServiceBuffer userServiceBuffer;
+
+    @Autowired
+    private Environment environment;
 
     private RestTemplate restTemplate;
 
@@ -64,11 +70,22 @@ public class HomeController {
 
 
     @GetMapping("/")
-    public String home(Model model) throws IOException, InterruptedException {
-
-        List<LocationStats> allstats = coronaVirusApiCall.getCovidCases();
+    public String home(Model model,HttpServletRequest request) throws IOException, InterruptedException {
+        List<LocationStats> allstats;
+        if(coronaVirusApiCall.getCasesBufferList().isEmpty()==false) {
+            allstats = coronaVirusApiCall.getCasesBufferList();
+            log.info("Cases buffer reused");
+        }
+        else {
+            allstats = coronaVirusApiCall.getCovidCases();
+            log.info("API call made for data");
+        }
         int sum = allstats.stream().mapToInt(stat -> stat.getLatestTotalCases()).sum();
         int totalnewCases = allstats.stream().mapToInt(stat -> stat.getDiffFromPreviousDay()).sum();
+
+//        String ip = this.userServiceBuffer.getClientIp(request);
+//        if(this.userServiceBuffer.getActiveIpAddresses().containsKey(ip))
+//                this.userServiceBuffer.getActiveIpAddresses().remove(ip);
 
         model.addAttribute("test", "test");
         model.addAttribute("locationStats", allstats);
@@ -85,6 +102,11 @@ public class HomeController {
         return "SafetyChecker";
     }
 
+    @GetMapping("/safetyCheckFail")
+    public String userCredentialsExist(Model model){
+        model.addAttribute("userObject",new UserModelDto());
+        return "UserExists";
+    }
     //todo this part will invoke a mail service as well that will notify the user that has provided details
 
     @GetMapping("/postProcessing")
@@ -98,44 +120,41 @@ public class HomeController {
             return "SafetyChecker";
         } else {
             RestTemplate restTemplate =this.restTemplate;
-            System.out.println("inside ");
             this.userModelDto = userModelDto;
-            //ZIP zip=this.coronaVirusDataService.weatherRestTemplateCall(Integer.parseInt(userModel.getPincode()));
 
             System.out.println(userModelDto);
-            userModelDto.setToken(UUID.randomUUID().toString());
-            this.authToken = userModelDto.getToken();
 
-            System.out.println("auth token is: " + this.authToken);
-            //jmsService.sendObjectUserSaveCommand(userModelDto,this.authToken);
 
-        service.execute(new Thread(){
+        ResponseEntity<TempUserInfo> tempUserInfo = restTemplate.exchange("http://"+environment.getProperty("covid.backend.ipaddress")+":8080/account/postUser",HttpMethod.POST,new HttpEntity<>(userModelDto),TempUserInfo.class);
 
-          @Override
-          public void run(){
-              restTemplate.postForObject(String.valueOf(URI.create("http://localhost:8081/covid/data/postUser")), userModelDto, userModelDto.getClass());
+        if(tempUserInfo.getBody().getUUID()=="NULL"&&tempUserInfo.getBody().getId()==Integer.MAX_VALUE)
+        {
+            return "redirect:/safetyCheckFail";
+        }
 
-          }
-        });
+        userServiceBuffer.getMailconfirmationTable().put(tempUserInfo.getBody().getUUID(),tempUserInfo.getBody().getId());
+
 
 
             return "Result";
-
-        }
+    }
 
     }
 
     @GetMapping("/mailAuthentication")
     public String mailConfirmationChecker(@RequestParam("token") String token, Model model) {
 
-        if (token.contentEquals(this.authToken)) {
-
+        if (userServiceBuffer.getMailconfirmationTable().containsKey(token)) {
+            //log.info("inside verification if block");
+           String responseEntity = restTemplate.postForObject(String.valueOf(URI.create("http://"+environment.getProperty("covid.backend.ipaddress")+":8080/account/certifyUser/"
+                    +userServiceBuffer.getMailconfirmationTable().get(token)))
+                    , new ParameterizedTypeReference<String>(){},String.class);
+            userServiceBuffer.getMailconfirmationTable().remove(token);
+            System.out.println(responseEntity);
             return "redirect:/";
         } else
 
             return "Result";
-
-
     }
 
 
@@ -148,28 +167,72 @@ public class HomeController {
     }
 
     @GetMapping("/loginCheck")
-    public String LoginCheck(@Valid @ModelAttribute LoginUser loginUser, BindingResult result,Model model) {
-        if (result.hasErrors())
-            return "Login";
+    public String LoginCheck(@Valid @ModelAttribute LoginUser loginUser, Errors result, Model model, HttpServletRequest request) {
 
+        if (result.hasErrors()) {
+            model.addAttribute("loginuser", LoginUser.builder().build());
+            return "failedlogin";
+        }
 
         else {
 
-            ResponseEntity<List<UserModel>> verification = this.restTemplate.exchange("http://localhost:8081/covid/data/login/user", HttpMethod.GET, null, new ParameterizedTypeReference<List<UserModel>>() {
+            ResponseEntity<List<UserModelDto>> verification = this.restTemplate.exchange("http://"+environment.getProperty("covid.backend.ipaddress")+":8080/account/login/user", HttpMethod.GET, null, new ParameterizedTypeReference<List<UserModelDto>>() {
             });
+            String clientIp = userServiceBuffer.getClientIp(request);
 
-            for (UserModel userModel : verification.getBody()) {
-                if (loginUser.getFirstname().contentEquals(userModel.getFirstName()) && loginUser.getPassword().contentEquals(userModel.getPassword())) {
-                    UserModelStatsDto temp = this.coronaVirusApiCall.getLiveuserRequest(userModel);
-                    model.addAttribute("data", temp);
-                    return "successlogin";
+            for (UserModelDto userModel : verification.getBody()) {
+                if (loginUser.getFirstname().contentEquals(userModel.getEmail()) && loginUser.getPassword().contentEquals(userModel.getPassword())) {
+
+                    if(userServiceBuffer.getActiveIpAddresses().containsKey(clientIp)==false) {
+                        UserModelStatsDto temp = this.coronaVirusApiCall.getLiveuserRequest(userModel);
+                        userServiceBuffer.getActiveIpAddresses().put(clientIp,new UserSessionStore(new HashSet<String>(Collections.singleton(loginUser.getFirstname())),1,System.currentTimeMillis()));
+                        log.info("first time request made by this ip");
+                        model.addAttribute("data", temp);
+                        return "successlogin";
+                    }
+                    else if(userServiceBuffer.getActiveIpAddresses().containsKey(clientIp)
+                            && userServiceBuffer.getActiveIpAddresses().get(clientIp).getEmailList().contains(loginUser.getFirstname())==false){
+                        log.info("2 different emailids logged in from the same ip");
+                        userServiceBuffer.getActiveIpAddresses().get(clientIp).getEmailList().add(loginUser.getFirstname());
+                        UserModelStatsDto temp = this.coronaVirusApiCall.getLiveuserRequest(userModel);
+                        model.addAttribute("data", temp);
+                        return "successlogin";
+                    }
+                    else if(userServiceBuffer.getActiveIpAddresses().containsKey(clientIp)
+                        && userServiceBuffer.getActiveIpAddresses().get(clientIp).getEmailList().contains(loginUser.getFirstname())==true){
+                            log.info("this ip has visited before");
+                        if(userServiceBuffer.getActiveIpAddresses().get(clientIp).getLoginAccessCount()==3){
+                            log.info("user exceeded its 3 time request limit");
+                            userServiceBuffer.getActiveIpAddresses().get(clientIp).setPrevTimeOfLoginCheck(System.currentTimeMillis());
+                            return "ExhaustedLoginCalls";
+                        }
+                        else{
+
+                            int val = userServiceBuffer.getActiveIpAddresses().get(clientIp).getLoginAccessCount();
+                            userServiceBuffer.getActiveIpAddresses().get(clientIp).setLoginAccessCount(val+1);
+                            userServiceBuffer.getActiveIpAddresses().get(clientIp).setPrevTimeOfLoginCheck(System.currentTimeMillis());
+                            UserModelStatsDto temp = this.coronaVirusApiCall.getLiveuserRequest(userModel);
+                            model.addAttribute("data", temp);
+                            log.info("same ip requested for data. "+(val+1));
+                            return "successlogin";
+                        }
+                    }
                 }
+
             }
 
-            return "Login";
+
+
+
         }
 
+        return "redirect:/failedLogin";
+    }
 
+    @GetMapping("/failedLogin")
+    public String loginFailed(Model model){
+        model.addAttribute("loginuser", LoginUser.builder().build());
+        return "failedlogin";
     }
 
     @GetMapping("/APISource")

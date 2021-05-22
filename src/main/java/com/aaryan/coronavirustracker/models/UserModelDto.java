@@ -19,11 +19,11 @@ public class UserModelDto implements Serializable {
 
     static final long serialNumber=-1214124L;
 
-    @JsonProperty("firstname")
+    @JsonProperty("firstName")
     @NotBlank
     private String firstName;
 
-    @JsonProperty("lastname")
+    @JsonProperty("lastName")
     @NotBlank
     private String lastName;
 
@@ -35,7 +35,7 @@ public class UserModelDto implements Serializable {
     @Pattern(regexp = "^[a-zA-Z0-9.]{5,40}@(gmail.com|yahoo.com|hotmail.com|outlook.com|sitpune.edu.in)$",message = "please make sure that you are entering only gmail and valid credentials")
     private String email;
 
-    @JsonProperty("phonenumber")
+    @JsonProperty("phoneNumber")
     @Pattern(regexp = "^[0-9]{10}",message ="phone number cannot contain characters!!")
     private String phoneNumber;
 
@@ -52,7 +52,5 @@ public class UserModelDto implements Serializable {
     @NotNull
     private String city;
 
-
-    private String token;
 
 }
